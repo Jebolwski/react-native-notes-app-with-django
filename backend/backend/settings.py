@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#1vs7^_vq6ng-d0^x0ks%_ooag!39-1d*540c(o2akt612y%8l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.11']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -140,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
-    'DATETIME_FORMAT': '%d %B %Y %H:%M',
+    'DATETIME_FORMAT': '%d %B %Y',
     'DEFAULT_AUTHENTICATION_CLASSES': (
 
         'rest_framework_simplejwt.authentication.JWTAuthentication',

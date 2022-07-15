@@ -29,10 +29,15 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 @api_view(['GET','POST'])
 def YourNotes(request):
-    notes = Note.objects.all().filter(user_id=request.data.get('user_id'))
+    notes = Note.objects.all().filter(user_id=request.data.get('user_id')).order_by("-edit_date")
     serializer = NoteSerializer(notes,many=True)
     return Response(serializer.data)
 
+@api_view(['GET','POST'])
+def YourNotesLastFive(request):
+    notes = Note.objects.all().filter(user_id=request.data.get('user_id')).order_by("-edit_date")[:5]
+    serializer = NoteSerializer(notes,many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET','POST'])
@@ -40,8 +45,17 @@ def AddNote(request):
     note = Note.objects.create(
         user = User.objects.get(id=request.data.get('user_id')),
         title = request.data.get('title'),
-        body = request.data.get('body'),
     )
+    note.save()
+    serializer = NoteSerializer(note,many=False)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET','POST'])
+def NoteStatus(request):
+    note = Note.objects.get(id=request.data.get("note_id"))
+    note.status=request.data.get("note_status");
     note.save()
     serializer = NoteSerializer(note,many=False)
     return Response(serializer.data)

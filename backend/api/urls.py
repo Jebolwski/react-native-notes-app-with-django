@@ -12,7 +12,9 @@ urlpatterns = [
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('notes/',views.YourNotes,name='your-notes'),
+    path('notes-five/',views.YourNotesLastFive,name='your-notes-five'),
     path('add-note/',views.AddNote,name='add-note'),
+    path('note-status/',views.NoteStatus,name='note-status'),
 
 
 
