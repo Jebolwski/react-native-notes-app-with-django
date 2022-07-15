@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   );
 
   let loginUser = async (username1, password1) => {
-    let response = await fetch("http://192.168.0.11:19002/api/token/", {
+    let response = await fetch("http://192.168.8.134:19002/api/token/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,23 +40,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // let logoutUser = () => {
-  //   setAuthTokens(null);
-  //   setUser(null);
-  //   AsyncStorage.removeItem("authTokens");
-  //   alert("Logged Out");
-  //   console.log(user);
-  //   console.log(authTokens);
-  // };
+  let logoutUser = () => {
+    setAuthTokens(null);
+    setUser(null);
+    AsyncStorage.removeItem("authTokens");
+    alert("Logged Out");
+    console.log(user);
+    console.log(authTokens);
+  };
 
   let updateToken = async () => {
-    let response = await fetch("http://192.168.0.11:19002/api/token/refresh/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh: authTokens?.refresh }),
-    });
+    let response = await fetch(
+      "http://192.168.8.134:19002/api/token/refresh/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh: authTokens?.refresh }),
+      }
+    );
 
     let data = await response.json();
 
@@ -76,7 +79,7 @@ export const AuthProvider = ({ children }) => {
   let registerUser = async (e) => {
     e.preventDefault();
 
-    let response = await fetch("http://192.168.0.11:19002/api/kayit-ol/", {
+    let response = await fetch("http://192.168.8.134:19002/api/kayit-ol/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -127,7 +130,7 @@ export const AuthProvider = ({ children }) => {
     user: user,
     authTokens: authTokens,
     loginUser: loginUser,
-    // logoutUser: logoutUser,
+    logoutUser: logoutUser,
     registerUser: registerUser,
   };
 
