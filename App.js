@@ -1,7 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
 import Settings from "./screens/Settings";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,7 +9,7 @@ import Blank from "./screens/Blank";
 import Profile from "./screens/Profile";
 import AuthContext, { AuthProvider } from "./AuthContext";
 import { useContext } from "react";
-
+import { colors } from "./colors";
 const Stack = createNativeStackNavigator();
 
 const Tabs = createBottomTabNavigator();
@@ -125,21 +124,42 @@ export default function App() {
       <AuthProvider>
         <NavigationContainer>
           <Stack.Navigator
-            screenOptions={{ headerTitleAlign: "center", headerShown: true }}
+            screenOptions={{
+              headerTitleAlign: "center",
+              headerShown: true,
+              headerTintColor: "white",
+            }}
             initialRouteName="Login"
           >
             <Stack.Screen
-              options={{ headerShown: false }}
+              options={{
+                headerShown: false,
+              }}
               name="Home"
               component={Home}
             />
-            <Stack.Screen name="Settings" component={Settings} />
-            {user == undefined ? (
-              <Stack.Screen name="Login" component={Login} />
-            ) : null}
-            {user == undefined ? null : (
-              <Stack.Screen name="Profile" component={Profile} />
-            )}
+            <Stack.Screen
+              options={{
+                headerShown: true,
+              }}
+              name="Login"
+              component={Login}
+            />
+            <Stack.Screen
+              name="Settings"
+              options={{
+                headerStyle: { backgroundColor: colors.dark_primary_color },
+              }}
+              component={Settings}
+            />
+
+            <Stack.Screen
+              name="Profile"
+              options={{
+                headerStyle: { backgroundColor: colors.dark_primary_color },
+              }}
+              component={Profile}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>
