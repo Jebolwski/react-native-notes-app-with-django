@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TextInput,
   BackHandler,
   KeyboardAvoidingView,
@@ -21,6 +20,7 @@ export default function Home({ navigation }) {
 
   let scrollRef = useRef();
   let textAddRef = useRef();
+
   const notesGel = async () => {
     let response = await fetch("http://192.168.8.134:19002/api/notes/", {
       method: "POST",
@@ -76,6 +76,23 @@ export default function Home({ navigation }) {
       alert("an error accured.");
     }
   };
+  const noteStar = async (number, NoteId) => {
+    let response = await fetch("http://192.168.8.134:19002/api/note-star/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        note_id: NoteId,
+        note_star: number,
+      }),
+    });
+    if (response.status === 200) {
+      notesGel();
+    } else {
+      alert("an error accured.");
+    }
+  };
   const ScrollDiv = (note) => {
     return (
       <View key={note.id} style={styles.scroll_div}>
@@ -98,9 +115,68 @@ export default function Home({ navigation }) {
             />
           )}
           <Text style={{ fontSize: 16, marginLeft: 10 }}>{note.title}</Text>
+          {note.star == 0 ? (
+            <Ionicons
+              name="star-outline"
+              color={"orange"}
+              size={22}
+              style={styles.star}
+              onPress={() => {
+                noteStar("1", note.id);
+              }}
+            />
+          ) : (
+            <Ionicons
+              name="star"
+              color={"yellow"}
+              size={22}
+              style={styles.star}
+              onPress={() => {
+                noteStar("0", note.id);
+              }}
+            />
+          )}
+
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: "red",
+              height: 67,
+              top: -21,
+              width: 40,
+              borderTopRightRadius: 20,
+              borderBottomRightRadius: 20,
+              right: -21,
+            }}
+          >
+            <Ionicons
+              name="trash"
+              size={22}
+              color="white"
+              style={{ marginLeft: 10, marginTop: 20 }}
+              onPress={() => {
+                removeNote(note.id);
+              }}
+            />
+          </View>
         </View>
       </View>
     );
+  };
+
+  const removeNote = async (note_id) => {
+    let response = await fetch(
+      `http://192.168.8.134:19002/api/note/${note_id}/remove/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.status === 200) {
+      notesGel();
+    }
   };
   useEffect(() => {
     notesGel();
@@ -110,7 +186,7 @@ export default function Home({ navigation }) {
   });
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior="position">
+      <KeyboardAvoidingView behavior="padding">
         <View>
           <Ionicons
             name="person-circle"
@@ -134,19 +210,21 @@ export default function Home({ navigation }) {
             ref={scrollRef}
             renderItem={({ item }) => ScrollDiv(item)}
           />
-          <TextInput
-            placeholder="Enter your note..."
-            style={styles.note_input}
-            onChangeText={(text) => setTitle(text)}
-            ref={textAddRef}
-          ></TextInput>
-          <Ionicons
-            onPress={addNote}
-            name="add-circle"
-            style={styles.icon}
-            color={colors.icon_color_2}
-            size={62}
-          />
+          <View style={styles.div_1}>
+            <TextInput
+              placeholder="Enter your note..."
+              style={styles.note_input}
+              onChangeText={(text) => setTitle(text)}
+              ref={textAddRef}
+            ></TextInput>
+            <Ionicons
+              onPress={addNote}
+              name="add-circle"
+              style={styles.icon}
+              color={colors.icon_color_2}
+              size={62}
+            />
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -156,6 +234,7 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primary_color,
+    flex: 1,
   },
   note: {
     fontWeight: "600",
@@ -166,19 +245,12 @@ const styles = StyleSheet.create({
     paddingLeft: 32,
   },
   icon: {
-    position: "relative",
-    left: "79%",
-    bottom: "7%",
+    bottom: 12,
+  },
+  star: {
+    position: "absolute",
+    right: 35,
     zIndex: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 2,
-      height: 2,
-    },
-    shadowOpacity: 0.45,
-    shadowRadius: 3.84,
-
-    elevation: 5,
   },
   scroll_div: {
     width: "80%",
@@ -202,8 +274,6 @@ const styles = StyleSheet.create({
   note_input: {
     backgroundColor: colors.icon_color,
     width: "60%",
-    marginLeft: "8%",
-    marginTop: "3.5%",
     position: "relative",
     zIndex: 2,
     height: 41,
@@ -218,5 +288,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  div_1: {
+    marginTop: "8%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 });
