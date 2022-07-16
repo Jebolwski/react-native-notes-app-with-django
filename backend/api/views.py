@@ -35,7 +35,7 @@ def YourNotes(request):
 
 @api_view(['GET','POST'])
 def YourNotesLastFive(request):
-    notes = Note.objects.all().filter(user_id=request.data.get('user_id')).order_by("-edit_date")[:5]
+    notes = Note.objects.all().filter(star=1).order_by("-edit_date")
     serializer = NoteSerializer(notes,many=True)
     return Response(serializer.data)
 
@@ -59,3 +59,18 @@ def NoteStatus(request):
     note.save()
     serializer = NoteSerializer(note,many=False)
     return Response(serializer.data)
+
+@api_view(['GET','POST'])
+def NoteStar(request):
+    note = Note.objects.get(id=request.data.get("note_id"))
+    note.star=request.data.get("note_star");
+    note.save()
+    serializer = NoteSerializer(note,many=False)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def RemoveNote(request,pk):
+    note = Note.objects.get(id=pk)
+    note.delete()
+    return Response("Deleted")

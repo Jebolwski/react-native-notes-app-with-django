@@ -15,6 +15,8 @@ urlpatterns = [
     path('notes-five/',views.YourNotesLastFive,name='your-notes-five'),
     path('add-note/',views.AddNote,name='add-note'),
     path('note-status/',views.NoteStatus,name='note-status'),
+    path('note-star/',views.NoteStar,name='note-star'),
+    path('note/<int:pk>/remove/',views.RemoveNote,name='note-remove'),
 
 
 
