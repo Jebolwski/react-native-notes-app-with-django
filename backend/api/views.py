@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User
 
-from .serializers import NoteSerializer
-from .models import Note
+from .serializers import NoteSerializer,ProfileSerializer
+from .models import Note, Profile
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -74,3 +74,12 @@ def RemoveNote(request,pk):
     note = Note.objects.get(id=pk)
     note.delete()
     return Response("Deleted")
+
+
+@api_view(['POST','GET'])
+def GetProfile(request,pk):
+    profile = Profile.objects.get(id=pk)
+    serializer = ProfileSerializer(profile,many=False)
+    return Response(serializer.data)
+
+

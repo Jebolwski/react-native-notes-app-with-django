@@ -1,3 +1,4 @@
+from distutils.command.upload import upload
 from operator import mod
 from tkinter import CASCADE
 from django.db import models
@@ -17,3 +18,13 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Profile(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=False,null=False)
+    bio = models.TextField(max_length=250,null=False,blank=False,default="No information was given.")
+    profilePhoto = models.ImageField(upload_to="profilePhotos",null=True,blank=True)
+    crate_date = models.DateTimeField(auto_now=True,blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
