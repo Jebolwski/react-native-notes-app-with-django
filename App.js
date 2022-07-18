@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Login from "./screens/Login";
 import Blank from "./screens/Blank";
 import Profile from "./screens/Profile";
+import ProfileEdit from "./screens/ProfileEdit";
 import AuthContext, { AuthProvider } from "./AuthContext";
 import { useContext } from "react";
 import { colors } from "./colors";
@@ -159,6 +160,13 @@ export default function App() {
                 headerStyle: { backgroundColor: colors.dark_primary_color },
               }}
               component={Profile}
+            />
+            <Stack.Screen
+              name="ProfileEdit"
+              options={{
+                headerStyle: { backgroundColor: colors.dark_primary_color },
+              }}
+              component={ProfileEdit}
             />
           </Stack.Navigator>
         </NavigationContainer>
