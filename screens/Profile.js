@@ -4,7 +4,7 @@ import { colors } from "../colors";
 import { Ionicons } from "@expo/vector-icons";
 import AuthContext from "../AuthContext";
 
-const Profile = (props) => {
+const Profile = ({ route, navigation }) => {
   const [notes, setNotes] = useState([]);
   const [notesFive, setNotesFive] = useState([]);
   let { user } = useContext(AuthContext);
@@ -73,8 +73,16 @@ const Profile = (props) => {
             marginLeft: 24,
           }}
         >
-          {props.route.params.username}
+          {route.params.username}
         </Text>
+        <Ionicons
+          name="pencil"
+          size={24}
+          style={{ marginTop: 6, marginLeft: 30 }}
+          onPress={() => {
+            navigation.navigate("ProfileEdit");
+          }}
+        />
       </View>
       <View
         style={{
