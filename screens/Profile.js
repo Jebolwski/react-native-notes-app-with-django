@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Image,
+  TouchableHighlight,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { colors } from "../colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,6 +15,8 @@ import AuthContext from "../AuthContext";
 const Profile = ({ route, navigation }) => {
   const [notes, setNotes] = useState([]);
   const [notesFive, setNotesFive] = useState([]);
+  const [profile, setProfile] = useState();
+
   let { user } = useContext(AuthContext);
   const notesGel = async () => {
     let response = await fetch("http://192.168.8.134:19002/api/notes/", {
@@ -56,15 +66,50 @@ const Profile = ({ route, navigation }) => {
       alert("an error accured.");
     }
   };
+  const profileGel = async () => {
+    let response = await fetch(
+      `http://192.168.8.134:19002/api/profile/${user.user_id}/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.status === 200) {
+      let data = await response.json();
+      setProfile(data);
+    }
+  };
 
   useEffect(() => {
     notesGel();
     notesFiveGel();
+    profileGel();
   }, []);
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Ionicons name="person" size={38} />
+        {/* <Ionicons name="person" size={38} /> */}
+        {profile && profile.profilePhoto ? (
+          <TouchableHighlight>
+            <Image
+              style={styles.photo}
+              source={{
+                uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
+              }}
+            ></Image>
+          </TouchableHighlight>
+        ) : (
+          <TouchableHighlight>
+            <Image
+              style={styles.photo}
+              source={{
+                uri: `https://pbs.twimg.com/media/DmNX8VyXcAElz_W.jpg`,
+              }}
+            ></Image>
+          </TouchableHighlight>
+        )}
         <Text
           style={{
             fontSize: 20,
@@ -205,6 +250,11 @@ const styles = StyleSheet.create({
     borderColor: colors.dark_primary_color,
   },
   scroll_div_parent: {},
+  photo: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+  },
 });
 
 export default Profile;

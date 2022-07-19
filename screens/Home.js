@@ -12,6 +12,8 @@ import {
   Animated,
   LayoutAnimation,
   ScrollView,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
 } from "react-native";
 import AuthContext from "../AuthContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -54,7 +56,6 @@ export default function Home({ navigation }) {
       setProfile(data);
     }
   };
-
   const notesGel = async () => {
     let response = await fetch("http://192.168.8.134:19002/api/notes/", {
       method: "POST",
@@ -166,18 +167,6 @@ export default function Home({ navigation }) {
         <KeyboardAvoidingView behavior="padding">
           <View>
             <Ionicons
-              name="person-circle"
-              size={40}
-              style={styles.settings_icon}
-              onPress={() => {
-                navigation.navigate("Profile", {
-                  id: user.user_id,
-                  username: user.username,
-                  email: user.email,
-                });
-              }}
-            />
-            <Ionicons
               name="settings"
               size={38}
               style={styles.person_icon}
@@ -190,18 +179,39 @@ export default function Home({ navigation }) {
               }}
             />
             {profile && profile.profilePhoto ? (
-              <Image
-                style={{ width: 60, height: 60, borderRadius: 30 }}
-                source={{
-                  uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  navigation.navigate("Profile", {
+                    id: user.user_id,
+                    username: user.username,
+                    email: user.email,
+                  });
                 }}
-              ></Image>
+              >
+                <Image
+                  style={styles.settings_icon}
+                  source={{
+                    uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
+                  }}
+                ></Image>
+              </TouchableWithoutFeedback>
             ) : (
-              <Image
-                source={{
-                  uri: `https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/142819271/original/09dafa4104fa6aeca4e62f33326be4933ae7ccac/create-cartoon-profile-picture-abd7.jpg`,
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  navigation.navigate("Profile", {
+                    id: user.user_id,
+                    username: user.username,
+                    email: user.email,
+                  });
                 }}
-              ></Image>
+              >
+                <Image
+                  source={{
+                    uri: `https://pbs.twimg.com/media/DmNX8VyXcAElz_W.jpg`,
+                  }}
+                  style={styles.settings_icon}
+                ></Image>
+              </TouchableWithoutFeedback>
             )}
             <Text style={styles.note}>Your Notes</Text>
             {/* <FlatList
@@ -351,9 +361,14 @@ const styles = StyleSheet.create({
   },
   settings_icon: {
     position: "absolute",
-    right: 105,
+    right: 115,
     top: 82,
-    zIndex: 2,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "gray",
   },
   note_input: {
     backgroundColor: colors.icon_color,
