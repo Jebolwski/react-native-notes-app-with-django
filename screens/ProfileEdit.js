@@ -2,12 +2,14 @@ import { View, Text, Image, StyleSheet, Button } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { colors } from "../colors";
 import AuthContext from "../AuthContext";
-import { launchImageLibrary } from "react-native-image-picker";
+import * as ImagePicker from "expo-image-picker";
 
 const ProfileEdit = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [profile, setProfile] = useState();
   const [loading, setLoading] = useState(true);
+  const [image, setImage] = useState();
+  const [result, setResult] = useState([]);
   const profileGel = async () => {
     let response = await fetch(
       `http://192.168.8.134:19002/api/profile/${user.user_id}/`,
@@ -36,8 +38,50 @@ const ProfileEdit = ({ navigation }) => {
     },
   };
   const upload = async () => {
-    const result = await launchImageLibrary(options);
+    const result = await launchCamera(options);
     console.log(result);
+  };
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    setResult(result);
+
+    var formdata = new FormData();
+    formdata.append("photo", result.uri);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  let duzenle = async (e) => {
+    e.preventDefault();
+    var formdata = new FormData();
+    formdata.append("photo", {
+      name: new Date() + "_profile",
+      uri: image,
+      type: "image/jpg",
+    });
+    var requestOptions = {
+      method: "PUT",
+      body: formdata,
+      credentials: "same-origin",
+      redirect: "follow",
+    };
+    fetch(
+      `http://192.168.8.134:19002/api/profile/${user.user_id}/edit/`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then(() => {
+        navigation.navigate("Home");
+      })
+      .catch((error) => console.log("error", error));
   };
 
   useEffect(() => {
@@ -67,9 +111,16 @@ const ProfileEdit = ({ navigation }) => {
             }}
           ></Image>
         )}
-        <Text>Profile Picture</Text>
+        <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
         <View style={styles.uploadDiv}>
-          <Button title="Upload" onPress={upload}></Button>
+          <Button title="Upload" onPress={pickImage} color={"black"}></Button>
+        </View>
+        <View style={styles.uploadDiv}>
+          <Button
+            title="Edit Profile"
+            color={"gray"}
+            onPress={duzenle}
+          ></Button>
         </View>
       </View>
     );
