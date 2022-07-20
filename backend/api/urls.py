@@ -18,6 +18,7 @@ urlpatterns = [
     path('note-star/',views.NoteStar,name='note-star'),
     path('note/<int:pk>/remove/',views.RemoveNote,name='note-remove'),
     path('profile/<int:pk>/',views.GetProfile,name='profile'),
+    path('profile/<int:pk>/edit/',views.EditProfile,name='edit-profile'),
 
 
 

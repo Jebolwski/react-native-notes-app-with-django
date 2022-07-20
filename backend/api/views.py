@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User
-
+from django.views.decorators.csrf import csrf_exempt
 from .serializers import NoteSerializer,ProfileSerializer
 from .models import Note, Profile
 
@@ -81,5 +81,17 @@ def GetProfile(request,pk):
     profile = Profile.objects.get(id=pk)
     serializer = ProfileSerializer(profile,many=False)
     return Response(serializer.data)
+
+@csrf_exempt 
+@api_view(['PUT','POST','GET'])
+def EditProfile(request,pk):
+    profile = Profile.objects.get(id=pk)
+    if (request.data.get("photo")!="undefined"):
+        profile.profilePhoto = request.data.get("photo") 
+    else:
+        profile.profilePhoto = None 
+    print(profile.profilePhoto)
+    profile.save()
+    return Response("Updated")
 
 
