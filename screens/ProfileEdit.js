@@ -1,14 +1,15 @@
-import { View, Text, Image, StyleSheet, Button } from "react-native";
+import { View, Text, Image, StyleSheet, Button, TextInput } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { colors } from "../colors";
 import AuthContext from "../AuthContext";
 import * as ImagePicker from "expo-image-picker";
-
+import { Ionicons } from "@expo/vector-icons";
 const ProfileEdit = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [profile, setProfile] = useState();
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState();
+  const [bio, setBio] = useState();
   const [result, setResult] = useState([]);
   const profileGel = async () => {
     let response = await fetch(
@@ -58,7 +59,6 @@ const ProfileEdit = ({ navigation }) => {
       setImage(result.uri);
     }
   };
-
   let duzenle = async (e) => {
     e.preventDefault();
     var formdata = new FormData();
@@ -67,54 +67,67 @@ const ProfileEdit = ({ navigation }) => {
       uri: image,
       type: "image/jpg",
     });
+    formdata.append("bio", bio == undefined ? profile.bio : bio);
     var requestOptions = {
       method: "PUT",
       body: formdata,
       credentials: "same-origin",
-      redirect: "follow",
     };
-    fetch(
+    let response = await fetch(
       `http://192.168.8.134:19002/api/profile/${user.user_id}/edit/`,
       requestOptions
-    )
-      .then((response) => response.text())
-      .then(() => {
-        navigation.navigate("Home");
-      })
-      .catch((error) => console.log("error", error));
+    );
+    console.log(response.status);
+    if (response.status === 200) {
+      navigation.navigate("Home");
+    }
+    // .then((response) => console.log(response.text()))
+    // .then(() => {
+    //   navigation.navigate("Home");
+    // })
+    // .catch((error) => console.log("error", error));
   };
-
   useEffect(() => {
     profileGel();
   }, []);
+
   if (loading) {
     return <Text>Loading...</Text>;
   } else {
     return (
       <View>
-        {profile.profilePhoto ? (
+        <Text style={{ marginTop: 30, textAlign: "center" }}>Your Bio</Text>
+        <TextInput
+          style={styles.note_input}
+          defaultValue={profile.bio}
+          onChangeText={(text) => setBio(text)}
+        ></TextInput>
+        <Text style={{ marginTop: 45, textAlign: "center" }}>
+          Your Profile Picture
+        </Text>
+        <Ionicons
+          name="image"
+          size={30}
+          style={styles.camera}
+          color="whitesmoke"
+          onPress={pickImage}
+        />
+        {image ? (
           <Image
-            style={{ width: 60, height: 60, borderRadius: 30 }}
+            source={{
+              uri: image,
+            }}
+            style={styles.profilePic}
+          />
+        ) : (
+          <Image
             source={{
               uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
             }}
-          ></Image>
-        ) : (
-          <Image
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-            }}
-            source={{
-              uri: "https://pbs.twimg.com/media/DmNX8VyXcAElz_W.jpg",
-            }}
-          ></Image>
+            style={styles.profilePic}
+          />
         )}
-        <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
-        <View style={styles.uploadDiv}>
-          <Button title="Upload" onPress={pickImage} color={"black"}></Button>
-        </View>
+
         <View style={styles.uploadDiv}>
           <Button
             title="Edit Profile"
@@ -137,5 +150,41 @@ const styles = StyleSheet.create({
   uploadDiv: {
     width: "30%",
     marginLeft: "35%",
+    marginTop: 10,
+  },
+  camera: {
+    marginLeft: "60%",
+    marginTop: "47%",
+    zIndex: 2,
+    position: "absolute",
+  },
+  note_input: {
+    backgroundColor: colors.icon_color,
+    width: "70%",
+    marginLeft: "15%",
+    position: "relative",
+    marginTop: 20,
+    zIndex: 2,
+    height: 41,
+    borderRadius: 20,
+    paddingLeft: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 0.45,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  profilePic: {
+    width: "40%",
+    height: "35%",
+    borderWidth: 1,
+    marginTop: 15,
+    marginLeft: "30%",
+    borderColor: "gray",
+    borderRadius: 15,
   },
 });

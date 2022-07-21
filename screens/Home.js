@@ -54,6 +54,7 @@ export default function Home({ navigation }) {
     if (response.status === 200) {
       let data = await response.json();
       setProfile(data);
+      alert("data");
     }
   };
   const notesGel = async () => {

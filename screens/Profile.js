@@ -129,6 +129,7 @@ const Profile = ({ route, navigation }) => {
           }}
         />
       </View>
+      <Text style={{ marginLeft: 60, marginTop: 20 }}></Text>
       <View
         style={{
           display: "flex",
