@@ -86,12 +86,16 @@ def GetProfile(request,pk):
 @api_view(['PUT','POST','GET'])
 def EditProfile(request,pk):
     profile = Profile.objects.get(id=pk)
-    if (request.data.get("photo")!="undefined"):
-        profile.profilePhoto = request.data.get("photo") 
+    print(request.data.get("photo"))
+    if (request.data.get("photo")):
+        profile.profilePhoto = request.data.get("photo")
     else:
-        profile.profilePhoto = None 
-    print(profile.profilePhoto)
+        profile.profilePhoto = profile.photo.url
+
+    profile.bio = request.data.get("bio")
     profile.save()
+    print(profile.profilePhoto)
+    print(profile.bio)
     return Response("Updated")
 
 
