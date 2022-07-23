@@ -43,7 +43,7 @@ export default function Home({ navigation }) {
 
   const profileGel = async () => {
     let response = await fetch(
-      `http://192.168.8.134:19002/api/profile/${user.user_id}/`,
+      `http://192.168.0.11:19002/api/profile/${user.user_id}/`,
       {
         method: "POST",
         headers: {
@@ -54,11 +54,10 @@ export default function Home({ navigation }) {
     if (response.status === 200) {
       let data = await response.json();
       setProfile(data);
-      alert("data");
     }
   };
   const notesGel = async () => {
-    let response = await fetch("http://192.168.8.134:19002/api/notes/", {
+    let response = await fetch("http://192.168.0.11:19002/api/notes/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +75,7 @@ export default function Home({ navigation }) {
     if (title == "" || title == undefined || title == null) {
       alert("Enter something to add a note.");
     } else {
-      let response = await fetch("http://192.168.8.134:19002/api/add-note/", {
+      let response = await fetch("http://192.168.0.11:19002/api/add-note/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +96,7 @@ export default function Home({ navigation }) {
     }
   };
   const noteStatus = async (number, NoteId) => {
-    let response = await fetch("http://192.168.8.134:19002/api/note-status/", {
+    let response = await fetch("http://192.168.0.11:19002/api/note-status/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +113,7 @@ export default function Home({ navigation }) {
     }
   };
   const noteStar = async (number, NoteId) => {
-    let response = await fetch("http://192.168.8.134:19002/api/note-star/", {
+    let response = await fetch("http://192.168.0.11:19002/api/note-star/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +131,7 @@ export default function Home({ navigation }) {
   };
   const removeNote = async (note_id) => {
     let response = await fetch(
-      `http://192.168.8.134:19002/api/note/${note_id}/remove/`,
+      `http://192.168.0.11:19002/api/note/${note_id}/remove/`,
       {
         method: "POST",
         headers: {
@@ -192,7 +191,7 @@ export default function Home({ navigation }) {
                 <Image
                   style={styles.settings_icon}
                   source={{
-                    uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
+                    uri: `http://192.168.0.11:19002/api/${profile.profilePhoto}/`,
                   }}
                 ></Image>
               </TouchableWithoutFeedback>

@@ -19,7 +19,7 @@ const Profile = ({ route, navigation }) => {
 
   let { user } = useContext(AuthContext);
   const notesGel = async () => {
-    let response = await fetch("http://192.168.8.134:19002/api/notes/", {
+    let response = await fetch("http://192.168.0.11:19002/api/notes/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ const Profile = ({ route, navigation }) => {
     }
   };
   const notesFiveGel = async () => {
-    let response = await fetch("http://192.168.8.134:19002/api/notes-five/", {
+    let response = await fetch("http://192.168.0.11:19002/api/notes-five/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const Profile = ({ route, navigation }) => {
     }
   };
   const noteStatus = async (number, NoteId) => {
-    let response = await fetch("http://192.168.8.134:19002/api/note-status/", {
+    let response = await fetch("http://192.168.0.11:19002/api/note-status/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const Profile = ({ route, navigation }) => {
   };
   const profileGel = async () => {
     let response = await fetch(
-      `http://192.168.8.134:19002/api/profile/${user.user_id}/`,
+      `http://192.168.0.11:19002/api/profile/${user.user_id}/`,
       {
         method: "POST",
         headers: {
@@ -96,7 +96,7 @@ const Profile = ({ route, navigation }) => {
             <Image
               style={styles.photo}
               source={{
-                uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
+                uri: `http://192.168.0.11:19002/api/${profile.profilePhoto}/`,
               }}
             ></Image>
           </TouchableHighlight>
@@ -154,8 +154,8 @@ const Profile = ({ route, navigation }) => {
         </Text>
       </View>
       <ScrollView
-        horizontal
         showsHorizontalScrollIndicator={false}
+        horizontal
         style={styles.horizontal}
       >
         {notesFive.map((note) => (
@@ -183,9 +183,15 @@ const Profile = ({ route, navigation }) => {
           </View>
         ))}
       </ScrollView>
-      <ScrollView style={{ width: "78%", marginLeft: "11%", marginTop: 10 }}>
+      <ScrollView
+        style={{
+          width: "80%",
+          marginLeft: "10%",
+        }}
+        showsVerticalScrollIndicator={false}
+      >
         {notes.map((note) => (
-          <View key={note.id} style={styles.scroll_div}>
+          <View key={note.id} style={styles.scroll_div_1}>
             <View style={{ display: "flex", flexDirection: "row" }}>
               {note.status == 0 ? (
                 <Ionicons
@@ -226,6 +232,7 @@ const styles = StyleSheet.create({
   },
   horizontal: {
     marginTop: 30,
+    marginBottom: -40,
     height: 400,
   },
   box: {
@@ -242,8 +249,16 @@ const styles = StyleSheet.create({
   scroll_div: {
     height: 140,
     marginBottom: 20,
-    width: 250,
     marginLeft: 40,
+    padding: 20,
+    borderRadius: 20,
+    backgroundColor: "rgba(198,196,199,0.3)",
+    borderWidth: 2,
+    borderColor: colors.dark_primary_color,
+  },
+  scroll_div_1: {
+    height: 120,
+    marginBottom: 20,
     padding: 20,
     borderRadius: 20,
     backgroundColor: "rgba(198,196,199,0.3)",
@@ -255,6 +270,8 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
+    borderWidth: 1,
+    borderColor: "gray",
   },
 });
 

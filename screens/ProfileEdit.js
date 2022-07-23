@@ -13,7 +13,7 @@ const ProfileEdit = ({ navigation }) => {
   const [result, setResult] = useState([]);
   const profileGel = async () => {
     let response = await fetch(
-      `http://192.168.8.134:19002/api/profile/${user.user_id}/`,
+      `http://192.168.0.11:19002/api/profile/${user.user_id}/`,
       {
         method: "POST",
         headers: {
@@ -62,11 +62,14 @@ const ProfileEdit = ({ navigation }) => {
   let duzenle = async (e) => {
     e.preventDefault();
     var formdata = new FormData();
-    formdata.append("photo", {
-      name: new Date() + "_profile",
-      uri: image,
-      type: "image/jpg",
-    });
+    if (image != null) {
+      formdata.append("photo", {
+        name: new Date() + "_profile",
+        uri: image,
+        type: "image/jpg",
+      });
+    }
+
     formdata.append("bio", bio == undefined ? profile.bio : bio);
     var requestOptions = {
       method: "PUT",
@@ -74,7 +77,7 @@ const ProfileEdit = ({ navigation }) => {
       credentials: "same-origin",
     };
     let response = await fetch(
-      `http://192.168.8.134:19002/api/profile/${user.user_id}/edit/`,
+      `http://192.168.0.11:19002/api/profile/${user.user_id}/edit/`,
       requestOptions
     );
     console.log(response.status);
@@ -92,7 +95,17 @@ const ProfileEdit = ({ navigation }) => {
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>Loading...</Text>
+      </View>
+    );
   } else {
     return (
       <View>
@@ -105,27 +118,54 @@ const ProfileEdit = ({ navigation }) => {
         <Text style={{ marginTop: 45, textAlign: "center" }}>
           Your Profile Picture
         </Text>
-        <Ionicons
-          name="image"
-          size={30}
-          style={styles.camera}
-          color="whitesmoke"
-          onPress={pickImage}
-        />
+
         {image ? (
-          <Image
-            source={{
-              uri: image,
-            }}
-            style={styles.profilePic}
-          />
+          <View style={styles.profilePic}>
+            <Image
+              source={{
+                uri: image,
+              }}
+              style={{ width: "100%", height: "100%", borderRadius: 13 }}
+            />
+            <Ionicons
+              name="image"
+              size={30}
+              style={styles.camera}
+              onPress={pickImage}
+            />
+            <Ionicons
+              name="trash-outline"
+              size={30}
+              style={styles.trash}
+              onPress={() => {
+                setImage();
+              }}
+            />
+          </View>
         ) : (
-          <Image
-            source={{
-              uri: `http://192.168.8.134:19002/api/${profile.profilePhoto}/`,
-            }}
-            style={styles.profilePic}
-          />
+          <View style={styles.profilePic}>
+            <Image
+              source={{
+                uri: `http://192.168.0.11:19002/api/${profile.profilePhoto}/`,
+              }}
+              style={{ width: "100%", height: "100%", borderRadius: 13 }}
+            />
+            <Ionicons
+              name="image"
+              size={30}
+              style={styles.camera}
+              onPress={pickImage}
+            />
+            <Ionicons
+              name="trash-outline"
+              size={30}
+              style={styles.trash}
+              onPress={() => {
+                setImage();
+                alert(image);
+              }}
+            />
+          </View>
         )}
 
         <View style={styles.uploadDiv}>
@@ -153,10 +193,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   camera: {
-    marginLeft: "60%",
-    marginTop: "47%",
+    right: 5,
+    top: 5,
+    color: "white",
     zIndex: 2,
     position: "absolute",
+  },
+  trash: {
+    right: 5,
+    bottom: 5,
+    zIndex: 2,
+    position: "absolute",
+    color: "white",
   },
   note_input: {
     backgroundColor: colors.icon_color,
@@ -179,11 +227,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   profilePic: {
-    width: "40%",
+    width: "50%",
     height: "35%",
     borderWidth: 1,
     marginTop: 15,
-    marginLeft: "30%",
+    marginLeft: "25%",
     borderColor: "gray",
     borderRadius: 15,
   },
